@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="org.springframework.web.context.support.ServletContextAttributeExporter">
+        <property name="attributes">
+            <map>
+                <entry key="categoryController" value-ref="categoryController"/>
+                <entry key="signUpController" value-ref="signUpController"/>
+                <entry key="activationController" value-ref="activationController"/>
+            </map>
+        </property>
+    </bean>
+    <bean id="UserFilter" class="ua.goit.filter.UserFilter">
+        <constructor-arg ref="userService"/>
+    </bean>
+    <import resource="controllerContext.xml"/>
+</beans>

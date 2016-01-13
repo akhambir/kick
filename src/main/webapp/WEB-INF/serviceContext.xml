@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="daoContext.xml"/>
+
+    <bean id="categoryService" class="ua.goit.service.CategoryServiceImpl">
+        <constructor-arg ref="categoryDao"/>
+    </bean>
+
+    <bean id="projectService" class="ua.goit.service.ProjectServiceImpl">
+        <constructor-arg ref="projectDao"/>
+    </bean>
+
+    <bean id="userService" class="ua.goit.service.UserServiceImpl">
+        <constructor-arg ref="userDao"/>
+    </bean>
+
+    <bean id="loginInService" class="ua.goit.service.LoginInServiceImpl">
+        <constructor-arg ref="userService"/>
+    </bean>
+
+</beans>

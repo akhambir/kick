@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+       <bean id="connectionGetAndFree" class="ua.goit.factory.ConnectionGetAndFree">
+              <constructor-arg value="IDB"/>
+       </bean>
+       <bean id="categoryDao" class="ua.goit.dao.CategoryDaoImpl">
+              <constructor-arg ref="connectionGetAndFree"/>
+       </bean>
+       <bean id="projectDao" class="ua.goit.dao.ProjectDaoImpl">
+              <constructor-arg ref="connectionGetAndFree"/>
+              <constructor-arg ref="userDao"/>
+              <constructor-arg ref="categoryDao"/>
+       </bean>
+
+       <bean id="userDao" class="ua.goit.dao.UserDaoImpl">
+              <constructor-arg ref="connectionGetAndFree"/>
+       </bean>
+
+</beans>

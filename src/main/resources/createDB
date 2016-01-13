@@ -1,0 +1,497 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+CREATE SCHEMA IF NOT EXISTS `kickstarter` DEFAULT CHARACTER SET latin1 ;
+USE `kickstarter` ;
+
+-- -----------------------------------------------------
+-- Table `kickstarter`.`Category`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `kickstarter`.`Category` ;
+
+CREATE TABLE IF NOT EXISTS `kickstarter`.`Category` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `timeStamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `kickstarter`.`Users`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `kickstarter`.`Users` ;
+
+CREATE TABLE IF NOT EXISTS `kickstarter`.`Users` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `login` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `token` INT NOT NULL,
+  `timeStamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `email` VARCHAR(128) NOT NULL,
+  `activationKey` VARCHAR(255) NULL,
+  `activeFlag` BOOL DEFAULT 0 NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `login_UNIQUE` (`login` ASC),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC),
+  UNIQUE INDEX `token_UNIQUE` (`token` ASC),
+  UNIQUE INDEX `activationKey_UNIQUE` (`activationKey` ASC))
+ENGINE = InnoDB;
+-- -----------------------------------------------------
+-- Table `kickstarter`.`Project`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `kickstarter`.`Project` ;
+
+CREATE TABLE IF NOT EXISTS `kickstarter`.`Project` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `timeStamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Category_id` INT NOT NULL,
+  `Users_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_Project_Category_idx` (`Category_id` ASC),
+  INDEX `fk_Project_Users1_idx` (`Users_id` ASC),
+  CONSTRAINT `fk_Project_Category`
+    FOREIGN KEY (`Category_id`)
+    REFERENCES `kickstarter`.`Category` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Project_Users1`
+    FOREIGN KEY (`Users_id`)
+    REFERENCES `kickstarter`.`Users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `kickstarter`.`Coments`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `kickstarter`.`Coments` ;
+
+CREATE TABLE IF NOT EXISTS `kickstarter`.`Coments` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `comment` VARCHAR(255) NOT NULL,
+  `timeStamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Project_id` INT NOT NULL,
+  `Users_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_Coments_Project1_idx` (`Project_id` ASC),
+  INDEX `fk_Coments_Users1_idx` (`Users_id` ASC),
+  CONSTRAINT `fk_Coments_Project1`
+    FOREIGN KEY (`Project_id`)
+    REFERENCES `kickstarter`.`Project` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Coments_Users1`
+    FOREIGN KEY (`Users_id`)
+    REFERENCES `kickstarter`.`Users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `kickstarter`.`AuthorBlog`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `kickstarter`.`AuthorBlog` ;
+
+CREATE TABLE IF NOT EXISTS `kickstarter`.`AuthorBlog` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `blog` VARCHAR(255) NOT NULL,
+  `timeStamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Project_id` INT NOT NULL,
+  `Users_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_AuthorBlog_Project1_idx` (`Project_id` ASC),
+  INDEX `fk_AuthorBlog_Users1_idx` (`Users_id` ASC),
+  CONSTRAINT `fk_AuthorBlog_Project1`
+    FOREIGN KEY (`Project_id`)
+    REFERENCES `kickstarter`.`Project` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_AuthorBlog_Users1`
+    FOREIGN KEY (`Users_id`)
+    REFERENCES `kickstarter`.`Users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+-- User
+
+insert into `kickstarter`.`Users`(id, name, login, password, token, email, activeFlag) 
+values(1,'Semen', 'SemenLogin','Password','12341','SemenLogin@gmail.com',1);
+insert into `kickstarter`.`Users`(id, name, login, password, token, email, activeFlag) 
+values(2,'Katia', 'KatiaLogin','Password','12342','KatiaLogin@gmail.com',0);
+insert into `kickstarter`.`Users`(id, name, login, password, token, email, activeFlag) 
+values(3,'Roma', 'RomaLogin','Password','12343','RomaLogin@gmail.com',1);
+insert into `kickstarter`.`Users`(id, name, login, password, token, email, activeFlag) 
+values(4,'Petia', 'PetiaLogin','Password','12344','PetiaLogin@gmail.com',0);
+insert into `kickstarter`.`Users`(id, name, login, password, token, email, activeFlag) 
+values(5,'Slava', 'SlavaLogin','Password','12345','SlavaLogin@gmail.com',1);
+
+-- Category
+
+insert into `kickstarter`.`Category`(id, name) 
+values(1,'Music');
+insert into `kickstarter`.`Category`(id, name) 
+values(2,'Art');
+insert into `kickstarter`.`Category`(id, name) 
+values(3,'IT');
+insert into `kickstarter`.`Category`(id, name) 
+values(4,'Science');
+insert into `kickstarter`.`Category`(id, name) 
+values(5,'Games');
+
+-- Project
+
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(1,'Music1', 1, 1);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(2,'Music2', 1, 2);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(3,'Music3', 1, 3);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(4,'Music4', 1, 4);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(5,'Music5', 1, 5);
+
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(6,'Art1', 2, 1);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(7,'Art1', 2, 2);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(8,'Art1', 2, 3);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(9,'Art1', 2, 4);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(10,'Art1', 2, 5);
+
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(11,'IT1', 3, 1);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(12,'IT1', 3, 2);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(13,'IT1', 3, 3);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(14,'IT1', 3, 4);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(15,'IT1', 3, 5);
+
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(16,'Science1', 4, 1);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(17,'Science2', 4, 2);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(18,'Science3', 4, 3);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(19,'Science4', 4, 4);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(20,'Science5', 4, 5);
+
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(21,'Game1', 5, 1);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(22,'Game2', 5, 2);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(23,'Game3', 5, 3);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(24,'Game4', 5, 4);
+insert into `kickstarter`.`Project`(id, name, Category_id, Users_id) 
+values(25,'Game5', 5, 5);
+
+-- Coments
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(1,'The coolest project ever', 1, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(2,'The coolest project ever', 1, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(3,'The coolest project ever', 1, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(4,'The coolest project ever', 1, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(5,'The coolest project ever', 1, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(6,'The coolest project ever', 2, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(7,'The coolest project ever', 2, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(8,'The coolest project ever', 2, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(9,'The coolest project ever', 2, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(10,'The coolest project ever', 2, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(11,'The coolest project ever', 3, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(12,'The coolest project ever', 3, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(13,'The coolest project ever', 3, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(14,'The coolest project ever', 3, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(15,'The coolest project ever', 3, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(16,'The coolest project ever', 4, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(17,'The coolest project ever', 4, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(18,'The coolest project ever', 4, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(19,'The coolest project ever', 4, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(20,'The coolest project ever', 4, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(21,'The coolest project ever', 5, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(22,'The coolest project ever', 5, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(23,'The coolest project ever', 5, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(24,'The coolest project ever', 5, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(25,'The coolest project ever', 5, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(26,'The coolest project ever', 6, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(27,'The coolest project ever', 6, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(28,'The coolest project ever', 6, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(29,'The coolest project ever', 6, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(30,'The coolest project ever', 6, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(31,'The coolest project ever', 7, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(32,'The coolest project ever', 7, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(33,'The coolest project ever', 7, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(34,'The coolest project ever', 7, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(35,'The coolest project ever', 7, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(36,'The coolest project ever', 8, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(37,'The coolest project ever', 8, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(38,'The coolest project ever', 8, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(39,'The coolest project ever', 8, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(40,'The coolest project ever', 8, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(41,'The coolest project ever', 9, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(42,'The coolest project ever', 9, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(43,'The coolest project ever', 9, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(44,'The coolest project ever', 9, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(45,'The coolest project ever', 9, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(46,'The coolest project ever', 10, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(47,'The coolest project ever', 10, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(48,'The coolest project ever', 10, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(49,'The coolest project ever', 10, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(50,'The coolest project ever', 10, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(51,'The coolest project ever', 11, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(52,'The coolest project ever', 11, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(53,'The coolest project ever', 11, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(54,'The coolest project ever', 11, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(55,'The coolest project ever', 11, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(56,'The coolest project ever', 12, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(57,'The coolest project ever', 12, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(58,'The coolest project ever', 12, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(59,'The coolest project ever', 12, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(60,'The coolest project ever', 12, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(61,'The coolest project ever', 13, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(62,'The coolest project ever', 13, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(63,'The coolest project ever', 13, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(64,'The coolest project ever', 13, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(65,'The coolest project ever', 13, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(66,'The coolest project ever', 14, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(67,'The coolest project ever', 14, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(68,'The coolest project ever', 14, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(69,'The coolest project ever', 14, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(70,'The coolest project ever', 14, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(71,'The coolest project ever', 14, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(72,'The coolest project ever', 14, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(73,'The coolest project ever', 14, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(74,'The coolest project ever', 14, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(75,'The coolest project ever', 14, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(76,'The coolest project ever', 15, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(77,'The coolest project ever', 15, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(78,'The coolest project ever', 15, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(79,'The coolest project ever', 15, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(80,'The coolest project ever', 15, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(81,'The coolest project ever', 16, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(82,'The coolest project ever', 16, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(83,'The coolest project ever', 16, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(84,'The coolest project ever', 16, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(85,'The coolest project ever', 16, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(86,'The coolest project ever', 17, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(87,'The coolest project ever', 17, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(88,'The coolest project ever', 17, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(89,'The coolest project ever', 17, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(90,'The coolest project ever', 17, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(91,'The coolest project ever', 18, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(92,'The coolest project ever', 18, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(93,'The coolest project ever', 18, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(94,'The coolest project ever', 18, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(95,'The coolest project ever', 18, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(96,'The coolest project ever', 19, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(97,'The coolest project ever', 19, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(98,'The coolest project ever', 19, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(99,'The coolest project ever', 19, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(100,'The coolest project ever', 19, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(101,'The coolest project ever', 20, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(102,'The coolest project ever', 20, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(103,'The coolest project ever', 20, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(104,'The coolest project ever', 20, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(105,'The coolest project ever', 20, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(106,'The coolest project ever', 21, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(107,'The coolest project ever', 21, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(108,'The coolest project ever', 21, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(109,'The coolest project ever', 21, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(110,'The coolest project ever', 21, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(111,'The coolest project ever', 22, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(112,'The coolest project ever', 22, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(113,'The coolest project ever', 22, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(114,'The coolest project ever', 22, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(115,'The coolest project ever', 22, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(116,'The coolest project ever', 23, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(117,'The coolest project ever', 23, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(118,'The coolest project ever', 23, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(119,'The coolest project ever', 23, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(120,'The coolest project ever', 23, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(121,'The coolest project ever', 24, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(122,'The coolest project ever', 24, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(123,'The coolest project ever', 24, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(124,'The coolest project ever', 24, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(125,'The coolest project ever', 24, 5);
+
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(126,'The coolest project ever', 25, 1);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(127,'The coolest project ever', 25, 2);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(128,'The coolest project ever', 25, 3);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(129,'The coolest project ever', 25, 4);
+insert into `kickstarter`.`Coments`(id, comment, Project_id, Users_id) 
+values(130,'The coolest project ever', 25, 5);
+
+-- AuthorBlog
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

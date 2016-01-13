@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="serviceContext.xml"/>
+    <bean id="categoryController" class="ua.goit.controller.CategoryController">
+        <constructor-arg ref="categoryService"/>
+        <constructor-arg ref="projectService"/>
+    </bean>
+    <bean id="signUpController" class="ua.goit.controller.SignUpController">
+        <constructor-arg ref="userService"/>
+    </bean>
+    <bean id="activationController" class="ua.goit.controller.ActivationController">
+        <constructor-arg ref="userService"/>
+    </bean>
+</beans>
